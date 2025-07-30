@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Happy Birthday</title>
 <style>
-    /* Toàn màn hình nền đen */
     body {
         margin: 0;
         background: black;
@@ -17,13 +16,26 @@
     /* Chữ Happy Birthday */
     #birthday-text {
         position: absolute;
-        top: 40%;
+        top: 35%;
         left: 50%;
         transform: translate(-50%, -50%);
         font-size: 4em;
         font-weight: bold;
         color: #ffccff;
         text-shadow: 0 0 20px #ff66cc, 0 0 40px #ff3399;
+        opacity: 0;
+        transition: opacity 2s ease-in-out;
+    }
+
+    /* Hướng dẫn nhấn */
+    #click-hint {
+        position: absolute;
+        top: 55%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5em;
+        color: #ffff99;
+        text-shadow: 0 0 10px #ff0;
         opacity: 0;
         transition: opacity 2s ease-in-out;
     }
@@ -56,6 +68,9 @@
 
 <!-- Chữ Happy Birthday -->
 <div id="birthday-text">Happy Birthday</div>
+
+<!-- Hướng dẫn nhấn -->
+<div id="click-hint">🎈 Nhấn vào màn hình để xem lời chúc 🎈</div>
 
 <!-- Lời chúc + ảnh -->
 <div id="message">
@@ -168,8 +183,13 @@ setTimeout(() => {
 }, 4000); // Hiện chữ sau 4 giây
 
 setTimeout(() => {
+    document.getElementById("click-hint").style.opacity = 1;
+}, 5500); // Hiện hướng dẫn sau 5.5 giây
+
+// Chỉ khi click mới hiện lời chúc
+document.body.addEventListener("click", () => {
     document.getElementById("message").style.opacity = 1;
-}, 7000); // Hiện lời chúc + ảnh sau 7 giây
+});
 </script>
 
 </body>
