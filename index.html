@@ -1,89 +1,176 @@
 <!DOCTYPE html>
-<html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Chúc Mừng Sinh Nhật</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Open+Sans&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      body {
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday</title>
+<style>
+    /* Toàn màn hình nền đen */
+    body {
         margin: 0;
-        padding: 0;
-        background: linear-gradient(to right, #ff9a9e, #fad0c4);
-        font-family: "Open Sans", sans-serif;
+        background: black;
         overflow: hidden;
-      }
-      .container {
+        font-family: 'Arial', sans-serif;
+        color: white;
         text-align: center;
-        color: #fff;
-        padding: 100px 20px;
-        position: relative;
-        z-index: 2;
-      }
-      h1 {
-        font-family: "Great Vibes", cursive;
-        font-size: 64px;
-        margin-bottom: 20px;
-      }
-      p {
-        font-size: 20px;
-        max-width: 600px;
-        margin: 0 auto;
-        line-height: 1.6;
-      }
-      .heart {
+    }
+
+    /* Chữ Happy Birthday */
+    #birthday-text {
         position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        pointer-events: none;
-        overflow: hidden;
-      }
-      .heart::before {
-        content: "❤️";
-        font-size: 24px;
-        animation: float 10s linear infinite;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4em;
+        font-weight: bold;
+        color: #ffccff;
+        text-shadow: 0 0 20px #ff66cc, 0 0 40px #ff3399;
+        opacity: 0;
+        transition: opacity 2s ease-in-out;
+    }
+
+    /* Lời chúc + ảnh */
+    #message {
         position: absolute;
-        top: 100%;
+        top: 20%;
         left: 50%;
         transform: translateX(-50%);
-      }
-      @keyframes float {
-        0% {
-          transform: translateX(-50%) translateY(0);
-          opacity: 1;
+        width: 80%;
+        font-size: 1.5em;
+        opacity: 0;
+        transition: opacity 2s ease-in-out;
+    }
+
+    #photo {
+        display: block;
+        margin: 20px auto;
+        max-width: 400px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px white;
+    }
+</style>
+</head>
+<body>
+
+<!-- Nơi vẽ pháo hoa -->
+<canvas id="fireworks"></canvas>
+
+<!-- Chữ Happy Birthday -->
+<div id="birthday-text">Happy Birthday</div>
+
+<!-- Lời chúc + ảnh -->
+<div id="message">
+    <!-- CHỖ VIẾT LỜI CHÚC -->
+    <p>🎉 Chúc em tuổi mới luôn hạnh phúc, xinh đẹp và thành công! 🎂</p>
+
+    <!-- CHỖ CHÈN ẢNH -->
+    <img id="photo" src="your-image.jpg" alt="Ảnh kỷ niệm">
+
+    <!-- CHỖ CHÈN NHẠC -->
+    <audio autoplay loop>
+        <source src="your-music.mp3" type="audio/mpeg">
+    </audio>
+</div>
+
+<script>
+/* ----- PHẦN HIỆU ỨNG PHÁO HOA ----- */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let fireworks = [];
+let particles = [];
+
+class Firework {
+    constructor(x, y, targetY) {
+        this.x = x;
+        this.y = y;
+        this.targetY = targetY;
+        this.speed = 2;
+        this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        this.exploded = false;
+    }
+    update() {
+        if (!this.exploded) {
+            this.y -= this.speed;
+            if (this.y <= this.targetY) {
+                this.exploded = true;
+                this.explode();
+            }
         }
-        100% {
-          transform: translateX(-50%) translateY(-100vh);
-          opacity: 0;
+    }
+    explode() {
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle(this.x, this.y, this.color));
         }
-      }
-      .footer {
-        position: absolute;
-        bottom: 20px;
-        width: 100%;
-        font-size: 16px;
-        color: #fff;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="heart"></div>
-    <div class="container">
-      <h1>Chúc mừng sinh nhật!</h1>
-      <p>
-        Hôm nay là một ngày thật đặc biệt,<br />
-        ngày em/chị/bạn đã đến với thế giới này, mang theo nụ cười và ánh
-        sáng!<br /><br />
-        Mong rằng mọi khoảnh khắc trong ngày hôm nay đều ngọt ngào như những
-        điều tốt đẹp nhất mà bạn xứng đáng nhận được.<br /><br />
-        Cảm ơn vì đã hiện diện trong cuộc đời này. 💖
-      </p>
-    </div>
-    <div class="footer">— Lời chúc từ Duy 💌</div>
-  </body>
+    }
+    draw() {
+        if (!this.exploded) {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+    }
+}
+
+class Particle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.speedX = (Math.random() - 0.5) * 5;
+        this.speedY = (Math.random() - 0.5) * 5;
+        this.alpha = 1;
+    }
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.alpha -= 0.02;
+    }
+    draw() {
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    }
+}
+
+function loop() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (Math.random() < 0.05) {
+        fireworks.push(new Firework(Math.random() * canvas.width, canvas.height, Math.random() * canvas.height / 2));
+    }
+
+    fireworks.forEach((f, i) => {
+        f.update();
+        f.draw();
+        if (f.exploded) fireworks.splice(i, 1);
+    });
+
+    particles.forEach((p, i) => {
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) particles.splice(i, 1);
+    });
+
+    requestAnimationFrame(loop);
+}
+loop();
+
+/* ----- TRÌNH TỰ HIỂN THỊ ----- */
+setTimeout(() => {
+    document.getElementById("birthday-text").style.opacity = 1;
+}, 4000); // Hiện chữ sau 4 giây
+
+setTimeout(() => {
+    document.getElementById("message").style.opacity = 1;
+}, 7000); // Hiện lời chúc + ảnh sau 7 giây
+</script>
+
+</body>
 </html>
