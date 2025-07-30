@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chúc Mừng Sinh Nhật</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to right, #ff9a9e, #fad0c4);
+        font-family: "Open Sans", sans-serif;
+        overflow: hidden;
+      }
+      .container {
+        text-align: center;
+        color: #fff;
+        padding: 100px 20px;
+        position: relative;
+        z-index: 2;
+      }
+      h1 {
+        font-family: "Great Vibes", cursive;
+        font-size: 64px;
+        margin-bottom: 20px;
+      }
+      p {
+        font-size: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+      .heart {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .heart::before {
+        content: "❤️";
+        font-size: 24px;
+        animation: float 10s linear infinite;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      @keyframes float {
+        0% {
+          transform: translateX(-50%) translateY(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(-50%) translateY(-100vh);
+          opacity: 0;
+        }
+      }
+      .footer {
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        font-size: 16px;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="heart"></div>
+    <div class="container">
+      <h1>Chúc mừng sinh nhật!</h1>
+      <p>
+        Hôm nay là một ngày thật đặc biệt,<br />
+        ngày em/chị/bạn đã đến với thế giới này, mang theo nụ cười và ánh
+        sáng!<br /><br />
+        Mong rằng mọi khoảnh khắc trong ngày hôm nay đều ngọt ngào như những
+        điều tốt đẹp nhất mà bạn xứng đáng nhận được.<br /><br />
+        Cảm ơn vì đã hiện diện trong cuộc đời này. 💖
+      </p>
+    </div>
+    <div class="footer">— Lời chúc từ Duy 💌</div>
+  </body>
+</html>
