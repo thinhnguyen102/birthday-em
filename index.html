@@ -1,93 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Happy Birthday</title>
-<style>
+  <meta charset="UTF-8">
+  <title>Happy Birthday</title>
+  <style>
     body {
-        margin: 0;
-        background: black;
-        overflow: hidden;
-        font-family: 'Arial', sans-serif;
-        color: white;
-        text-align: center;
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      color: white;
+      text-align: center;
     }
 
-    /* Chữ Happy Birthday */
-    #birthday-text {
-        position: absolute;
-        top: 35%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 4em;
-        font-weight: bold;
-        color: #ffccff;
-        text-shadow: 0 0 20px #ff66cc, 0 0 40px #ff3399;
-        opacity: 0;
-        transition: opacity 2s ease-in-out;
+    .big-text {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 5em;
+      font-weight: bold;
+      color: #ffccff;
+      text-shadow: 0 0 30px #ff66cc, 0 0 60px #ff3399;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
     }
 
-    /* Hướng dẫn nhấn */
-    #click-hint {
-        position: absolute;
-        top: 55%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 1.5em;
-        color: #ffff99;
-        text-shadow: 0 0 10px #ff0;
-        opacity: 0;
-        transition: opacity 2s ease-in-out;
-    }
-
-    /* Lời chúc + ảnh */
-    #message {
-        position: absolute;
-        top: 20%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80%;
-        font-size: 1.5em;
-        opacity: 0;
-        transition: opacity 2s ease-in-out;
+    #message-container {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      font-size: 1.5em;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
     }
 
     #photo {
-        display: block;
-        margin: 20px auto;
-        max-width: 400px;
-        border-radius: 15px;
-        box-shadow: 0 0 20px white;
+      display: block;
+      margin: 20px auto;
+      max-width: 400px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px white;
     }
-</style>
+
+    .countdown {
+      font-size: 5em;
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ffff00;
+      text-shadow: 0 0 20px #ff0;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+  </style>
 </head>
 <body>
 
-<!-- Nơi vẽ pháo hoa -->
 <canvas id="fireworks"></canvas>
 
-<!-- Chữ Happy Birthday -->
-<div id="birthday-text">Happy Birthday</div>
+<div id="countdown" class="countdown">3</div>
+<div id="text1" class="big-text">Happy</div>
+<div id="text2" class="big-text">Birthday</div>
+<div id="text3" class="big-text">To You</div>
 
-<!-- Hướng dẫn nhấn -->
-<div id="click-hint">🎈 Nhấn vào màn hình để xem lời chúc 🎈</div>
-
-<!-- Lời chúc + ảnh -->
-<div id="message">
-    <!-- CHỖ VIẾT LỜI CHÚC -->
-    <p>🎉 Chúc em tuổi mới luôn hạnh phúc, xinh đẹp và thành công! 🎂</p>
-
-    <!-- CHỖ CHÈN ẢNH -->
-    <img id="photo" src="your-image.jpg" alt="Ảnh kỷ niệm">
-
-    <!-- CHỖ CHÈN NHẠC -->
-    <audio autoplay loop>
-        <source src="your-music.mp3" type="audio/mpeg">
-    </audio>
+<div id="message-container">
+  <p>🎉 Chúc em tuổi mới luôn hạnh phúc, xinh đẹp và thành công! 🎂</p>
+  <img id="photo" src="your-image.jpg" alt="Ảnh kỷ niệm">
+  <audio autoplay loop>
+    <source src="your-music.mp3" type="audio/mpeg">
+  </audio>
 </div>
 
 <script>
-/* ----- PHẦN HIỆU ỨNG PHÁO HOA ----- */
+// === Firework Effect ===
 const canvas = document.getElementById("fireworks");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
@@ -97,98 +86,122 @@ let fireworks = [];
 let particles = [];
 
 class Firework {
-    constructor(x, y, targetY) {
-        this.x = x;
-        this.y = y;
-        this.targetY = targetY;
-        this.speed = 2;
-        this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        this.exploded = false;
+  constructor(x, y, targetY) {
+    this.x = x;
+    this.y = y;
+    this.targetY = targetY;
+    this.speed = 6;
+    this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+    this.exploded = false;
+  }
+  update() {
+    if (!this.exploded) {
+      this.y -= this.speed;
+      if (this.y <= this.targetY) {
+        this.exploded = true;
+        this.explode();
+      }
     }
-    update() {
-        if (!this.exploded) {
-            this.y -= this.speed;
-            if (this.y <= this.targetY) {
-                this.exploded = true;
-                this.explode();
-            }
-        }
+  }
+  explode() {
+    for (let i = 0; i < 100; i++) {
+      particles.push(new Particle(this.x, this.y, this.color));
     }
-    explode() {
-        for (let i = 0; i < 50; i++) {
-            particles.push(new Particle(this.x, this.y, this.color));
-        }
+  }
+  draw() {
+    if (!this.exploded) {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.fill();
     }
-    draw() {
-        if (!this.exploded) {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
-            ctx.fillStyle = this.color;
-            ctx.fill();
-        }
-    }
+  }
 }
 
 class Particle {
-    constructor(x, y, color) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.speedX = (Math.random() - 0.5) * 5;
-        this.speedY = (Math.random() - 0.5) * 5;
-        this.alpha = 1;
-    }
-    update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        this.alpha -= 0.02;
-    }
-    draw() {
-        ctx.globalAlpha = this.alpha;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.globalAlpha = 1;
-    }
+  constructor(x, y, color) {
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.speedX = (Math.random() - 0.5) * 8;
+    this.speedY = (Math.random() - 0.5) * 8;
+    this.alpha = 1;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    this.alpha -= 0.015;
+  }
+  draw() {
+    ctx.globalAlpha = this.alpha;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
 }
 
 function loop() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    if (Math.random() < 0.05) {
-        fireworks.push(new Firework(Math.random() * canvas.width, canvas.height, Math.random() * canvas.height / 2));
-    }
+  if (Math.random() < 0.08) {
+    fireworks.push(new Firework(Math.random() * canvas.width, canvas.height, Math.random() * canvas.height / 2));
+  }
 
-    fireworks.forEach((f, i) => {
-        f.update();
-        f.draw();
-        if (f.exploded) fireworks.splice(i, 1);
-    });
+  fireworks.forEach((f, i) => {
+    f.update();
+    f.draw();
+    if (f.exploded) fireworks.splice(i, 1);
+  });
 
-    particles.forEach((p, i) => {
-        p.update();
-        p.draw();
-        if (p.alpha <= 0) particles.splice(i, 1);
-    });
+  particles.forEach((p, i) => {
+    p.update();
+    p.draw();
+    if (p.alpha <= 0) particles.splice(i, 1);
+  });
 
-    requestAnimationFrame(loop);
+  requestAnimationFrame(loop);
 }
 loop();
 
-/* ----- TRÌNH TỰ HIỂN THỊ ----- */
-setTimeout(() => {
-    document.getElementById("birthday-text").style.opacity = 1;
-}, 4000); // Hiện chữ sau 4 giây
+// === Countdown & Text Sequence ===
+function showElement(id, delay) {
+  setTimeout(() => {
+    document.getElementById(id).style.opacity = 1;
+  }, delay);
+}
 
-setTimeout(() => {
-    document.getElementById("click-hint").style.opacity = 1;
-}, 5500); // Hiện hướng dẫn sau 5.5 giây
+function hideElement(id, delay) {
+  setTimeout(() => {
+    document.getElementById(id).style.opacity = 0;
+  }, delay);
+}
 
-// Chỉ khi click mới hiện lời chúc
+// Countdown 3 → 2 → 1
+["3", "2", "1"].forEach((num, idx) => {
+  setTimeout(() => {
+    const countdown = document.getElementById("countdown");
+    countdown.textContent = num;
+    countdown.style.opacity = 1;
+    setTimeout(() => countdown.style.opacity = 0, 900);
+  }, idx * 1000);
+});
+
+// Texts: Happy → Birthday → To You
+setTimeout(() => {
+  showElement("text1", 0);
+  hideElement("text1", 1500);
+  showElement("text2", 2000);
+  hideElement("text2", 3500);
+  showElement("text3", 4000);
+}, 3100);
+
+// Click to reveal message
 document.body.addEventListener("click", () => {
-    document.getElementById("message").style.opacity = 1;
+  document.getElementById("text3").style.opacity = 0;
+  document.getElementById("message-container").style.opacity = 1;
 });
 </script>
 
